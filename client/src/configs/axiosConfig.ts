@@ -1,12 +1,11 @@
 import axios from "axios";
-import process from "process";
 
-const BASE_URL = process.env.REACT_APP_SERVER_URI;
+import { refreshTokenService } from "~/services/authService";
+import { SERVER_BASE_URL } from "~/utils/constants";
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: SERVER_BASE_URL,
   timeout: 5000,
-  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -14,11 +13,10 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Với trường hợp server không gắn token lên cookie, ngưỢc lại thì chỉ cần dùng withCredentials: true,
-    // const accessToken = localStorage.getItem("accessToken");
-    // if (accessToken) {
-    //   config.headers["Authorization"] = `Bearer ${accessToken}`;
-    // }
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)
@@ -41,7 +39,7 @@ axiosInstance.interceptors.response.use(
         // localStorage.setItem("accessToken", accessToken);
         // localStorage.setItem("refreshToken", newRefreshToken);
 
-        const response = await axios.post("api");
+        const response = await refreshTokenService();
 
         const { accessToken } = response.data;
 
@@ -51,13 +49,14 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // localStorage.removeItem("accessToken");
-        // localStorage.removeItem("refreshToken");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     } else if (error.response.status === 403) {
-      // localStorage.clear();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       window.location.href = "/login";
     }
     return Promise.reject(error);

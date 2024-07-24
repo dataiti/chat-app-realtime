@@ -4,14 +4,14 @@ import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    firstname: {
       type: String,
       required: true,
       trim: true,
       minLength: 2,
       maxlength: 50,
     },
-    lastName: {
+    lastname: {
       type: String,
       required: true,
       trim: true,
@@ -35,12 +35,6 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default: "",
-      required: true,
-    },
-    avatarPublicId: {
-      type: String,
-      default: "",
-      required: true,
     },
     passwordChangedAt: {
       type: String,
@@ -50,6 +44,10 @@ const userSchema = new mongoose.Schema(
     },
     passwordResetExpires: {
       type: String,
+    },
+    isOnline: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

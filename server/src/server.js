@@ -6,7 +6,8 @@ import { env } from "~/configs/environtment.config";
 import { CONNECT_DATABASE } from "~/configs/mongodb.config";
 import { corsOptions } from "~/configs/cors.config";
 import { APIs_V1 } from "~/routes/v1";
-import { errorHandlingMiddleware } from "~/middlewares/errorHandling.middleware";
+import errorHandlingMiddleware from "~/middlewares/errorHandling.middleware";
+import setupSocket from "~/socket";
 
 const START_SERVER = () => {
   const app = express();
@@ -16,9 +17,18 @@ const START_SERVER = () => {
     next();
   });
 
+  app.use("/uploads/files", express.static("uploads/files"));
+
   app.use(cookieParser());
 
   app.use(cors(corsOptions));
+  // app.use(
+  //   cors({
+  //     origin: [env.CLIENT_DOMAIN],
+  //     methods: ["GET", "POST", "PUT", "DELETE"],
+  //     credentials: true,
+  //   })
+  // );
 
   app.use(express.json());
 
@@ -26,9 +36,11 @@ const START_SERVER = () => {
 
   app.use(errorHandlingMiddleware);
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
+  const server = app.listen(env.APP_PORT, () => {
     console.log("✅ Server running on port " + env.APP_PORT);
   });
+
+  setupSocket(server);
 };
 
 (async () => {

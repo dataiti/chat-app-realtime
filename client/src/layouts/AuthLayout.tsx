@@ -1,10 +1,19 @@
+import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
   return (
-    <div>
+    <Box
+      sx={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Outlet />
-    </div>
+    </Box>
   );
 };
 

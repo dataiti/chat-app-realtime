@@ -1,9 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "~/store/store";
-
-interface AppState {
-  openChatDetail: boolean;
-}
+import { RootState } from "~/store";
+import { AppState } from "~/types/types";
 
 const initialState: AppState = {
   openChatDetail: true,

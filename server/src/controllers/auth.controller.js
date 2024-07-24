@@ -1,7 +1,7 @@
 import ms from "ms";
 import { StatusCodes } from "http-status-codes";
 
-import User from "~/models/user.model";
+import UserModel from "~/models/user.model";
 import { JwtProvider } from "~/providers/jwt.provider";
 import { env } from "~/configs/environtment.config";
 import ApiError from "~/utils/ApiError";
@@ -10,7 +10,7 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const findUser = await User.findOne({ email });
+    const findUser = await UserModel.findOne({ email });
 
     if (!findUser)
       throw new ApiError(StatusCodes.UNAUTHORIZED, "Incorrect Email");
@@ -18,39 +18,32 @@ const login = async (req, res, next) => {
     if (!(await findUser.isCorrectPassword(password)))
       throw new ApiError(StatusCodes.UNAUTHORIZED, "Incorrect password");
 
-    const { password: userPassword, ...others } = findUser._doc;
+    const userInfo = {
+      _id: findUser._id,
+      firstname: findUser.firstname,
+      lastname: findUser.lastname,
+      email: findUser.email,
+      avatar: findUser.avatar,
+      isOnline: findUser.isOnline,
+    };
 
     const accessToken = JwtProvider.generateTokens(
-      others,
+      userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
       "5s"
     );
     const refreshToken = JwtProvider.generateTokens(
-      others,
+      userInfo,
       env.REFRESH_TOKEN_SECRET_SIGNATURE,
       ms("14 days")
     );
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "none",
-      maxAge: ms("14 days"),
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "none",
-      maxAge: ms("14 days"),
-    });
-
     res.status(200).json({
-      success: true,
+      status: "success",
       message: "Login account successfully",
       accessToken,
       refreshToken,
-      data: others,
+      data: userInfo,
     });
   } catch (error) {
     next(error);
@@ -59,16 +52,16 @@ const login = async (req, res, next) => {
 
 const register = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstname, lastname, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await UserModel.findOne({ email });
 
     if (existingUser)
       throw new ApiError(StatusCodes.CONFLICT, "E-mail is being used");
 
-    const newUser = new User({
-      firstName,
-      lastName,
+    const newUser = new UserModel({
+      firstname,
+      lastname,
       email,
       password,
     });
@@ -76,7 +69,8 @@ const register = async (req, res, next) => {
     await newUser.save();
 
     res.status(StatusCodes.CREATED).json({
-      success: true,
+      status: "success",
+
       message: "Register user successfully",
     });
   } catch (error) {
@@ -86,11 +80,8 @@ const register = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-
     res.status(StatusCodes.OK).json({
-      success: true,
+      status: "success",
       message: "Logout user successfully",
     });
   } catch (error) {
@@ -104,7 +95,7 @@ const resetPassword = async (req, res) => {};
 
 const refreshToken = async (req, res, next) => {
   try {
-    const refreshToken = req.cookies?.refreshToken;
+    const { refreshToken } = req.body;
 
     if (!refreshToken) {
       throw new ApiError(
@@ -118,24 +109,32 @@ const refreshToken = async (req, res, next) => {
       env.REFRESH_TOKEN_SECRET_SIGNATURE
     );
 
-    const userInfo = {};
+    const userInfo = {
+      _id: refreshTokenDecoded._id,
+      firstname: refreshTokenDecoded.firstname,
+      lastname: refreshTokenDecoded.lastname,
+      email: refreshTokenDecoded.email,
+      avatar: refreshTokenDecoded.avatar,
+      isOnline: refreshTokenDecoded.isOnline,
+    };
 
     const accessToken = JwtProvider.generateTokens(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      "1h"
+      "5s"
     );
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: ms("14 days"),
-    });
+    const newRefreshToken = JwtProvider.generateTokens(
+      userInfo,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      ms("14 days")
+    );
 
     res.status(StatusCodes.OK).json({
+      status: "success",
       message: "Refresh token sucessfully",
       accessToken,
+      newRefreshToken,
     });
   } catch (error) {
     next(error);

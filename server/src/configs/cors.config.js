@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { WHTIELIST_DOMAINS } from "~/utils/constants";
+import { WHITELIST_DOMAINS } from "~/utils/constants";
 import { env } from "~/configs/environtment.config";
 import ApiError from "~/utils/ApiError";
 
@@ -10,7 +10,7 @@ export const corsOptions = {
       return callback(null, true);
     }
 
-    if (WHTIELIST_DOMAINS.includes(origin)) {
+    if (WHITELIST_DOMAINS.includes(origin)) {
       return callback(null, true);
     }
 
@@ -22,6 +22,6 @@ export const corsOptions = {
     );
   },
   methods: ["GET", "POST", "PUT", "DELETE"],
-  optionsSuccessStatus: true,
+  // optionsSuccessStatus: true,
   credentials: true,
 };

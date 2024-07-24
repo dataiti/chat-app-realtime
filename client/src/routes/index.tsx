@@ -23,7 +23,7 @@ const routes: RouteObject[] = [
             element: <LoginPage />,
           },
           {
-            path: "login",
+            path: "register",
             element: <RegisterPage />,
           },
         ],

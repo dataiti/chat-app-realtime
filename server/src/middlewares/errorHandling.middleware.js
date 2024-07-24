@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { env } from "~/configs/environtment.config";
 
-export const errorHandlingMiddleware = (err, req, res, next) => {
+const errorHandlingMiddleware = (err, req, res, next) => {
   if (!err.statusCode) {
     err.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
   }
@@ -16,3 +16,5 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
 
   res.status(responseError.statusCode).json(responseError);
 };
+
+export default errorHandlingMiddleware;

@@ -76,6 +76,15 @@ const theme = extendTheme({
         },
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "16px",
+          padding: "14px 20px",
+          textTransform: "none",
+        },
+      },
+    },
   },
 });
 

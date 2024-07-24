@@ -2,6 +2,8 @@ import express from "express";
 import { StatusCodes } from "http-status-codes";
 
 import { authRouter } from "~/routes/v1/auth.route";
+import { conversationRouter } from "~/routes/v1/conversation.route";
+import { messageRouter } from "~/routes/v1/message.route";
 
 const Router = express.Router();
 
@@ -10,5 +12,7 @@ Router.get("/status", (req, res) =>
 );
 
 Router.use("/auth", authRouter);
+Router.use("/conversation", conversationRouter);
+Router.use("/message", messageRouter);
 
 export const APIs_V1 = Router;

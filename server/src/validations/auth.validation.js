@@ -20,8 +20,8 @@ const login = async (req, res, next) => {
 
 const register = async (req, res, next) => {
   const correctCondition = Joi.object({
-    firstName: Joi.string().min(2).max(50).required().trim().strict(),
-    lastName: Joi.string().min(2).max(50).required().trim().strict(),
+    firstname: Joi.string().min(2).max(50).required().trim().strict(),
+    lastname: Joi.string().min(2).max(50).required().trim().strict(),
     email: Joi.string().email().min(5).max(50).required().trim().strict(),
     password: Joi.string().min(8).max(16).required().trim().strict(),
   });
