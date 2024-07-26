@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import { Server as SocketIOServer } from "socket.io";
+
 import { env } from "~/configs/environtment.config";
 import ConversationModel from "~/models/conversation.model";
 import MessageModel from "~/models/message.model";
@@ -24,6 +26,79 @@ const setupSocket = (server) => {
 
   const createGroupConversation = async (message) => {
     try {
+    } catch (error) {}
+  };
+
+  const getConversationDetail = async (message) => {
+    const { conversationId, userId } = message;
+    const userSocketId = userSocketMap.get(userId);
+
+    try {
+      const result = await MessageModel.aggregate([
+        {
+          $match: {
+            conversationId: new mongoose.Types.ObjectId(conversationId),
+            messageType: { $in: ["IMAGE", "FILE", "LINK"] },
+          },
+        },
+        {
+          $sort: { createdAt: -1 },
+        },
+        {
+          $group: {
+            _id: "$messageType",
+            count: { $sum: 1 },
+            messages: {
+              $push: {
+                _id: "$_id",
+                conversationId: "$conversationId",
+                senderId: "$senderId",
+                messageContent: "$messageContent",
+                messageType: "$messageType",
+                fileType: "$fileType",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            messageType: "$_id",
+            count: 1,
+            messages: 1,
+          },
+        },
+        {
+          $addFields: {
+            sortOrder: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ["$messageType", "IMAGE"] }, then: 1 },
+                  { case: { $eq: ["$messageType", "FILE"] }, then: 2 },
+                  { case: { $eq: ["$messageType", "LINK"] }, then: 3 },
+                ],
+                default: 4,
+              },
+            },
+          },
+        },
+        {
+          $sort: { sortOrder: 1 },
+        },
+        {
+          $project: {
+            sortOrder: 0,
+          },
+        },
+      ]);
+
+      if (userSocketId) {
+        io.to(userSocketId).emit("receiveConversationDetail", {
+          status: "success",
+          message: "Get conversation messages successfully",
+          data: result,
+        });
+      }
     } catch (error) {}
   };
 
@@ -82,17 +157,28 @@ const setupSocket = (server) => {
         conversationId: currentConversationId,
         senderId,
         messageContent,
-        fileType: getFileType(messageContent),
         messageType: getMessageType(messageContent),
       });
+
+      if (getMessageType(messageContent) === "FILE") {
+        newMessage.fileType = getFileType(messageContent);
+      }
 
       await newMessage.save();
 
       if (senderSocketId) {
-        io.to(senderSocketId).emit("receiveMessage", newMessage);
+        io.to(senderSocketId).emit("receiveMessage", {
+          status: "success",
+          message: "Receive message is successfully",
+          data: newMessage,
+        });
       }
       if (recepientSocketId) {
-        io.to(recepientSocketId).emit("receiveMessage", newMessage);
+        io.to(recepientSocketId).emit("receiveMessage", {
+          status: "success",
+          message: "Receive message is successfully",
+          data: newMessage,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -124,8 +210,9 @@ const setupSocket = (server) => {
       console.log("User ID not provided during connection");
     }
 
+    socket.on("getConversationDetail", getConversationDetail);
     socket.on("createGroup", createGroupConversation);
-    socket.on("getConservation", getConversation);
+    socket.on("getConsersation", getConversation);
     socket.on("sendMessage", sendMessage);
     socket.on("disconnect", () => disconnect(socket));
   });

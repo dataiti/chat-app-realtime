@@ -1,3 +1,5 @@
+import { useState, KeyboardEvent } from "react";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 import {
   EmojiEmotions,
   Send,
@@ -11,30 +13,22 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { useEffect, useRef, useState, KeyboardEvent } from "react";
-import EmojiPicker, { Theme } from "emoji-picker-react";
+
+import useClickOutside from "~/hooks/useClickOutSide";
+import useAppDispatch from "~/hooks/useAppDispatch";
+import { addMessage } from "~/store/slices/conversationSlice";
 
 const Footer = () => {
-  const emojiRef = useRef<HTMLElement | null>(null);
+  const dispatch = useAppDispatch();
 
   const [emojiPickerOpen, setEmojiPickerOpen] = useState<boolean>(false);
   const [messageValue, setMessageValue] = useState<string>("");
 
-  useEffect(() => {
-    function handleClickEmojiOutside(event: MouseEvent) {
-      if (
-        emojiRef.current &&
-        !emojiRef.current.contains(event.target as Node)
-      ) {
-        setEmojiPickerOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickEmojiOutside);
+  const handleClickOutside = () => {
+    setEmojiPickerOpen(false);
+  };
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickEmojiOutside);
-    };
-  }, [emojiRef]);
+  const emojiRef = useClickOutside(handleClickOutside);
 
   const handleAddEmoji = (emoji: { emoji: string }) => {
     if (emoji) {
@@ -43,7 +37,12 @@ const Footer = () => {
   };
 
   const sendMessage = async () => {
+    if (!messageValue) return;
+
     try {
+      // dispatch(addMessage());
+
+      setMessageValue("");
     } catch (error) {
       console.log(error);
     }

@@ -1,11 +1,14 @@
 import axiosInstance from "~/configs/axiosConfig";
-import { GET_CONVERSATION_DETAIL_ENDPOINT } from "~/utils/constants";
+import { CurrentConversationPayload } from "~/types/types";
+import { GET_CURRENT_CONVERSATION_ENDPOINT } from "~/utils/constants";
 
-export const getConversationDetailService = async (
-  conversationId: string,
-  limit: number
-) => {
+export const getCurrentConversationService = async ({
+  limit,
+  senderId,
+  recepientId,
+  conversationType,
+}: CurrentConversationPayload) => {
   return await axiosInstance.get(
-    `${GET_CONVERSATION_DETAIL_ENDPOINT}/${conversationId}?limit=${limit}`
+    `${GET_CURRENT_CONVERSATION_ENDPOINT}?limit=${limit}&senderId=${senderId}&recepientId=${recepientId}&conversationType=${conversationType}`
   );
 };

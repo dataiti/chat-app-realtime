@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "",
+      default: "uploads/files/1721816216841/avatar-default.jpg",
     },
     passwordChangedAt: {
       type: String,

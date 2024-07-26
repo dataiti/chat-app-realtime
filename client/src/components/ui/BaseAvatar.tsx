@@ -1,7 +1,10 @@
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
-import React from "react";
+
+import { SxProps } from "@mui/system";
+import { Theme } from "@mui/material/styles";
+import { SERVER_BASE_URL } from "~/utils/constants";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -33,15 +36,17 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 interface BaseAvatarProps {
-  src: string;
-  alt: string;
-  isOnline: boolean;
+  src?: string;
+  alt?: string;
+  isOnline?: boolean;
+  sx?: SxProps<Theme>;
 }
 
 const BaseAvatar: React.FC<BaseAvatarProps> = ({
   src,
   alt,
   isOnline,
+  sx,
   ...props
 }) => {
   return (
@@ -53,22 +58,24 @@ const BaseAvatar: React.FC<BaseAvatarProps> = ({
           variant="dot"
         >
           <Avatar
-            alt={alt}
-            src={src}
+            alt={alt || ""}
+            src={src ? `${SERVER_BASE_URL}/${src}` : ""}
             sx={{
               width: 50,
               height: 50,
+              ...sx,
             }}
             {...props}
           />
         </StyledBadge>
       ) : (
         <Avatar
-          alt={alt}
-          src={src}
+          alt={alt || ""}
+          src={src ? `${SERVER_BASE_URL}/${src}` : ""}
           sx={{
             width: 50,
             height: 50,
+            ...sx,
           }}
           {...props}
         />

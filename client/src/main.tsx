@@ -8,14 +8,17 @@ import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/s
 import { store } from "~/store";
 import App from "~/App";
 import theme from "~/configs/themeConfig";
+import { SocketProvider } from "~/context/SocketContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <CssVarsProvider theme={theme}>
-          <CssBaseline />
-          <App />
+          <SocketProvider>
+            <CssBaseline />
+            <App />
+          </SocketProvider>
         </CssVarsProvider>
       </Provider>
     </BrowserRouter>

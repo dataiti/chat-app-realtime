@@ -1,15 +1,19 @@
 import { DarkMode, LightMode, Logout, Message } from "@mui/icons-material";
-import { Avatar, IconButton, useColorScheme } from "@mui/material";
+import { IconButton, useColorScheme } from "@mui/material";
 import Stack from "@mui/material/Stack";
 
+import BaseAvatar from "~/components/ui/BaseAvatar";
+import useAppDispatch from "~/hooks/useAppDispatch";
+import useAppSelector from "~/hooks/useAppSelector";
+import { authSelect, logout } from "~/store/slices/authSlice";
+
 const Sidebar = () => {
+  const dispatch = useAppDispatch();
+  const { userInfo } = useAppSelector(authSelect);
   const { mode, setMode } = useColorScheme();
 
-  const handleLogout = async () => {
-    try {
-    } catch (error) {
-      console.log(error);
-    }
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
@@ -36,7 +40,11 @@ const Sidebar = () => {
         <IconButton onClick={handleLogout}>
           <Logout />
         </IconButton>
-        <Avatar src="" alt="" sx={{ cursor: "pointer" }} />
+        <BaseAvatar
+          src={userInfo?.avatar}
+          alt={`${userInfo?.firstname} ${userInfo?.lastname}`}
+          isOnline={userInfo?.isOnline}
+        />
       </Stack>
     </Stack>
   );

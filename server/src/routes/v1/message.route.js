@@ -7,7 +7,7 @@ const Router = express.Router();
 const upload = multer({ dest: "uploads/files" });
 
 Router.route("/upload-file").post(
-  //   authMiddleware.isAuthorized,
+  // authMiddleware.isAuthorized,
   upload.single("file"),
   messageController.uploadFile
 );

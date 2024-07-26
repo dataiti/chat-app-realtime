@@ -5,8 +5,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { registerFormSchema } from "~/utils/validation";
 import RegisterForm from "~/components/form/RegisterForm";
+import useAppDispatch from "~/hooks/useAppDispatch";
+import { register } from "~/store/slices/authSlice";
 
 const RegsiterPage = () => {
+  const dispatch = useAppDispatch();
   const form = useForm<yup.InferType<typeof registerFormSchema>>({
     defaultValues: { email: "", password: "" },
     resolver: yupResolver(registerFormSchema),
@@ -16,9 +19,7 @@ const RegsiterPage = () => {
   const handleSubmitRegister = async (
     data: yup.InferType<typeof registerFormSchema>
   ) => {
-    try {
-      console.log(data);
-    } catch (error) {}
+    dispatch(register(data));
   };
 
   return (

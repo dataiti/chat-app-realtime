@@ -1,50 +1,76 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { call, takeLatest, put } from "redux-saga/effects";
 import { AxiosResponse } from "axios";
+import toast from "react-hot-toast";
 
 import { loginService, registerService } from "~/services/authService";
-import { login, register } from "~/store/slices/authSlice";
 import {
+  login,
+  loginSuccess,
+  register,
+  registerSucess,
+  updateUser,
+} from "~/store/slices/authSlice";
+import {
+  GetMeResponse,
   LoginFormValues,
-  LoginResponse,
+  CredentialResponse,
   RegisterFormValues,
 } from "~/types/types";
 import { saveToken } from "~/utils/token";
+import { getMeService } from "~/services/userService";
 
-function* loginSaga(action: PayloadAction<LoginFormValues>) {
+function* handleGetMeSaga() {
   try {
-    const response: AxiosResponse<LoginResponse> = yield call(
+    const response: AxiosResponse<GetMeResponse> = yield call(getMeService);
+
+    if (response.status === 200) {
+      yield put(updateUser(response.data));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* handleLoginSaga(action: PayloadAction<LoginFormValues>) {
+  try {
+    const response: AxiosResponse<CredentialResponse> = yield call(
       loginService,
       action.payload
     );
+
     if (response.status === 200) {
-      console.log(response.data);
+      const { refreshToken, accessToken } = response.data;
 
-      const { accessToken, refreshToken, data } = response.data;
-
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      saveToken(accessToken, refreshToken);
-      yield put(login(response.data));
+      saveToken(refreshToken, accessToken);
+      yield put(loginSuccess(response.data));
+      yield call(handleGetMeSaga);
+      toast.success("Login successfully");
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function* registerSaga(action: PayloadAction<RegisterFormValues>) {
+function* handleRegisterSaga(action: PayloadAction<RegisterFormValues>) {
   try {
-    const response: AxiosResponse = yield call(registerService, action.payload);
+    const response: AxiosResponse<CredentialResponse> = yield call(
+      registerService,
+      action.payload
+    );
     if (response.status === 201) {
-      const { accessToken, refreshToken, data } = response.data;
-
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      saveToken(accessToken, refreshToken);
-      yield put(register(response.data));
+      yield call(handleGetMeSaga);
+      yield put(registerSucess(response.data));
+      toast.success("Created new account successfully");
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function* authSaga() {
-  yield takeLatest(login.type, loginSaga);
-  yield takeLatest(register.type, registerSaga);
+function* watchAuthSaga() {
+  yield takeLatest(login.type, handleLoginSaga);
+  yield takeLatest(register.type, handleRegisterSaga);
 }
 
-export default authSaga;
+export default watchAuthSaga;

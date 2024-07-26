@@ -1,14 +1,19 @@
 import { Box, Typography } from "@mui/material";
-import { ContactItemType, ContactItemProps } from "~/types/types";
-import BaseAvatar from "../ui/BaseAvatar";
+import { ContactItemProps, User } from "~/types/types";
+import BaseAvatar from "~/components/ui/BaseAvatar";
+import useAppSelector from "~/hooks/useAppSelector";
+import {
+  conversationSelect,
+  selectContact,
+} from "~/store/slices/conversationSlice";
+import useAppDispatch from "~/hooks/useAppDispatch";
 
-const ContactItem: React.FC<ContactItemProps> = ({
-  contactItem,
-  selectedContact,
-  onSelectedContact,
-}) => {
-  const handleSelectContact = (contactItem: ContactItemType) => {
-    onSelectedContact(contactItem);
+const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
+  const dispatch = useAppDispatch();
+  const { selectedContact } = useAppSelector(conversationSelect);
+
+  const handleSelectContact = (contactItem: User) => {
+    dispatch(selectContact(contactItem));
   };
 
   return (
@@ -29,7 +34,7 @@ const ContactItem: React.FC<ContactItemProps> = ({
     >
       <BaseAvatar
         src={contactItem.avatar}
-        alt={contactItem.firstName}
+        alt={contactItem.firstname}
         isOnline={contactItem.isOnline}
       />
       <Box sx={{ width: "100%" }}>
@@ -49,7 +54,7 @@ const ContactItem: React.FC<ContactItemProps> = ({
                   : "text.primary",
             }}
           >
-            {contactItem.firstName} {contactItem.lastName}
+            {contactItem.firstname} {contactItem.lastname}
           </Typography>
           <Typography variant="body2">4m</Typography>
         </Box>

@@ -2,8 +2,8 @@ import { StatusCodes } from "http-status-codes";
 import { JwtProvider } from "~/providers/jwt.provider";
 import { env } from "~/configs/environtment.config";
 
-const isAuthorized = async (req, res, next) => {
-  const accessToken = req.cookies?.accessToken;
+const isAuthorized = (req, res, next) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -12,7 +12,7 @@ const isAuthorized = async (req, res, next) => {
   }
 
   try {
-    const accessTokenDecoded = await JwtProvider.verifyToken(
+    const accessTokenDecoded = JwtProvider.verifyToken(
       accessToken,
       env.ACCESS_TOKEN_SECRET_SIGNATURE
     );
@@ -23,7 +23,7 @@ const isAuthorized = async (req, res, next) => {
     if (error.message?.includes("jwt expired")) {
       return res
         .status(StatusCodes.GONE)
-        .json({ message: "Need to refresh token." });
+        .json({ message: "Need to access token." });
     }
 
     res

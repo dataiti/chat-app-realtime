@@ -5,6 +5,8 @@ export const saveToken = (
   accessToken: string | null,
   refreshToken: string | null
 ) => {
+  console.log("save token");
+
   if (accessToken && refreshToken) {
     localStorage.setItem(accessTokenKey, accessToken);
     localStorage.setItem(refreshTokenKey, refreshToken);

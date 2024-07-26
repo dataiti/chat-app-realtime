@@ -20,11 +20,7 @@ const LoginPage = () => {
   const handleSubmitLogin = async (
     data: yup.InferType<typeof loginFormSchema>
   ) => {
-    try {
-      console.log(data);
-
-      dispatch(login(data));
-    } catch (error) {}
+    dispatch(login(data));
   };
 
   return (

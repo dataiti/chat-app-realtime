@@ -2,7 +2,7 @@ import { Box, Button, FormControl, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import { RegisterFormProps } from "~/types/types";
-import BaseInputController from "~/components/form/BaseInpuController";
+import BaseInputController from "~/components/ui/BaseInpuController";
 
 const RegisterForm: React.FC<RegisterFormProps> = ({
   form,

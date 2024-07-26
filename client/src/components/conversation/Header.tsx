@@ -2,10 +2,13 @@ import { ViewSidebar } from "@mui/icons-material";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import BaseAvatar from "~/components/ui/BaseAvatar";
 import useAppDispatch from "~/hooks/useAppDispatch";
+import useAppSelector from "~/hooks/useAppSelector";
 import { toggleOpenChatDetail } from "~/store/slices/appSlice";
+import { conversationSelect } from "~/store/slices/conversationSlice";
 
 const Header = () => {
   const dispatch = useAppDispatch();
+  const { selectedContact } = useAppSelector(conversationSelect);
 
   const handleToggleOpenChatDetail = () => {
     dispatch(toggleOpenChatDetail());
@@ -14,7 +17,11 @@ const Header = () => {
   return (
     <Stack direction="row" justifyContent="space-between" sx={{ padding: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <BaseAvatar isOnline />
+        <BaseAvatar
+          src={selectedContact?.avatar}
+          alt={selectedContact?.firstname}
+          isOnline={selectedContact?.isOnline}
+        />
         <Box
           sx={{
             width: "100%",
@@ -23,9 +30,11 @@ const Header = () => {
           }}
         >
           <Typography variant="body1" sx={{ color: "text.primary" }}>
-            Nguyễn Đạt
+            {selectedContact?.firstname} {selectedContact?.lastname}
           </Typography>
-          <Typography variant="body2">Đang hoạt động</Typography>
+          <Typography variant="body2">
+            {selectedContact?.isOnline ? "Online" : "Offline"}
+          </Typography>
         </Box>
       </Box>
       <Box>

@@ -6,14 +6,12 @@ import RegisterPage from "~/pages/auth/RegisterPage";
 
 import AuthLayout from "~/layouts/AuthLayout";
 import DashboardLayout from "~/layouts/DashboardLayout";
-
-import PublicRoute from "~/routes/PublicRoute";
-import PrivateRoute from "~/routes/PrivateRoute";
+import ProtectedRoute from "~/routes/ProtectedRoute";
 
 const routes: RouteObject[] = [
   {
     path: "/",
-    element: <PublicRoute />,
+    element: <ProtectedRoute />,
     children: [
       {
         element: <AuthLayout />,
@@ -32,7 +30,7 @@ const routes: RouteObject[] = [
   },
   {
     path: "/chat",
-    element: <PrivateRoute />,
+    element: <ProtectedRoute />,
     children: [
       {
         element: <DashboardLayout />,

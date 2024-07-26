@@ -1,12 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { authStateType, LoginResponse } from "~/types/types";
+import {
+  authStateType,
+  CredentialResponse,
+  GetMeResponse,
+  LoginFormValues,
+  RegisterFormValues,
+} from "~/types/types";
 import { RootState } from "~/store";
 import { getToken, saveToken } from "~/utils/token";
 
 const initialState: authStateType = {
   userInfo: JSON.parse(localStorage.getItem("userInfo") || "null"),
-  isAuthenticated: Boolean(getToken().accessToken),
+  isAuthenticated: Boolean(getToken().accessToken) || false,
   accessToken: getToken().accessToken || null,
   refreshToken: getToken().refreshToken || null,
 };
@@ -15,18 +21,24 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredential: (state, action: PayloadAction<LoginResponse>) => {
-      const { accessToken, refreshToken, data } = action.payload;
-
+    updateUser: (state, action: PayloadAction<GetMeResponse>) => {
+      state.userInfo = action.payload.data;
+      localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
+    },
+    setCredential: (state, action: PayloadAction<CredentialResponse>) => {
+      const { accessToken, refreshToken } = action.payload;
       state.isAuthenticated = true;
-      state.userInfo = data;
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
     },
-    login: (state, action: PayloadAction<LoginResponse>) => {
+    login: (state, _action: PayloadAction<LoginFormValues>) => ({ ...state }),
+    loginSuccess: (state, action: PayloadAction<CredentialResponse>) => {
       authSlice.caseReducers.setCredential(state, action);
     },
-    register: (state, action: PayloadAction<LoginResponse>) => {
+    register: (state, _action: PayloadAction<RegisterFormValues>) => ({
+      ...state,
+    }),
+    registerSucess: (state, action: PayloadAction<CredentialResponse>) => {
       authSlice.caseReducers.setCredential(state, action);
     },
     logout: (state) => {
@@ -34,14 +46,20 @@ const authSlice = createSlice({
       state.userInfo = null;
       state.accessToken = null;
       state.refreshToken = null;
-
       localStorage.removeItem("userInfo");
       saveToken(null, null);
     },
   },
 });
 
-export const { login, register, logout } = authSlice.actions;
+export const {
+  updateUser,
+  login,
+  loginSuccess,
+  register,
+  registerSucess,
+  logout,
+} = authSlice.actions;
 
 export const authSelect = (state: RootState) => state.auth;
 

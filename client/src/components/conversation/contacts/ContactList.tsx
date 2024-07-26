@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import { ContactListProps } from "~/types/types";
-import ContactItem from "~/components/conversation/ContactItem";
+import ContactItem from "~/components/conversation/contacts/ContactItem";
 
 const ContactList: React.FC<ContactListProps> = ({
   contacts,

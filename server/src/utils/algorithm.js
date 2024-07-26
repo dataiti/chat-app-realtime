@@ -30,5 +30,5 @@ export const getFileType = (filename) => {
     }
   }
 
-  return "unknown";
+  return "UNKOWN";
 };

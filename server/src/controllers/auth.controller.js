@@ -30,7 +30,7 @@ const login = async (req, res, next) => {
     const accessToken = JwtProvider.generateTokens(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      "5s"
+      "50m"
     );
     const refreshToken = JwtProvider.generateTokens(
       userInfo,

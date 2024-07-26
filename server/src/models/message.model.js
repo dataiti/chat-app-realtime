@@ -22,7 +22,6 @@ const messageSchema = new mongoose.Schema(
     },
     fileType: {
       type: String,
-      default: "UNKNOWN",
       enum: ["UNKOWN", "DOC", "ZIP"],
     },
     isSeen: {
