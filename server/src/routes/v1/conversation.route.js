@@ -5,12 +5,12 @@ import { authMiddleware } from "~/middlewares/auth.middleware";
 const Router = express.Router();
 
 Router.route("/get-current-conversation").get(
-  authMiddleware.isAuthorized,
-  conversationController.getConversation
+     // authMiddleware.isAuthorized,
+     conversationController.getConversation
 );
 
 Router.route("/get-conversation-detail/:conversationId").get(
-  conversationController.getConversationDetail
+     conversationController.getConversationDetail
 );
 
 export const conversationRouter = Router;

@@ -1,53 +1,67 @@
 import { Box, Stack } from "@mui/material";
+import { useEffect, useRef } from "react";
+
 import Footer from "~/components/conversation/Footer";
 import Header from "~/components/conversation/Header";
-import useAppSelector from "~/hooks/useAppSelector";
-import {
-  conversationSelect,
-  fetchCurrentConversation,
-} from "~/store/slices/conversationSlice";
-import { useEffect } from "react";
-import useAppDispatch from "~/hooks/useAppDispatch";
-import { authSelect } from "~/store/slices/authSlice";
 import UserInfo from "~/components/conversation/UserInfo";
+import MessageContent from "~/components/conversation/MessageContent";
+
+import useAppDispatch from "~/hooks/useAppDispatch";
+import useAppSelector from "~/hooks/useAppSelector";
+
+import { authSelect } from "~/store/slices/authSlice";
+import {
+     conversationSelect,
+     fetchCurrentConversation,
+} from "~/store/slices/conversationSlice";
 
 const Conversation = () => {
-  const dispatch = useAppDispatch();
-  const { userInfo } = useAppSelector(authSelect);
-  const { selectedContact } = useAppSelector(conversationSelect);
+     const chatScrollRef = useRef<HTMLDivElement | null>(null);
+     const dispatch = useAppDispatch();
+     const { userInfo } = useAppSelector(authSelect);
+     const { selectedContact, currentConversation } =
+          useAppSelector(conversationSelect);
 
-  useEffect(() => {
-    if (selectedContact && userInfo) {
-      dispatch(
-        fetchCurrentConversation({
-          limit: 20,
-          senderId: userInfo._id,
-          recepientId: selectedContact._id,
-          conversationType: "SINGLE",
-        })
-      );
-    }
-  }, [selectedContact?._id]);
+     useEffect(() => {
+          if (chatScrollRef.current) {
+               chatScrollRef.current.scrollIntoView({ behavior: "smooth" });
+          }
+     }, [selectedContact, currentConversation]);
 
-  return (
-    <Stack flexDirection="column" sx={{ width: "100%" }}>
-      <Header />
-      <Box
-        sx={{
-          flex: 1,
-          padding: 2,
-          // height: "calc(40vh)",
-          overflowY: "scroll",
-          scrollbarWidth: "none",
-          gap: 1,
-        }}
-      >
-        <UserInfo />
-        {/* <Box>{JSON.stringify(currentConversation)}</Box> */}
-      </Box>
-      <Footer />
-    </Stack>
-  );
+     useEffect(() => {
+          if (selectedContact && userInfo) {
+               dispatch(
+                    fetchCurrentConversation({
+                         limit: 20,
+                         senderId: userInfo._id,
+                         recepientId: selectedContact._id,
+                         conversationType: "SINGLE",
+                    })
+               );
+          }
+     }, [selectedContact?._id]);
+
+     return (
+          <Stack flexDirection="column" sx={{ width: "100%" }}>
+               <Header />
+               <Box
+                    ref={chatScrollRef}
+                    sx={{
+                         flex: 1,
+                         padding: 2,
+                         overflowY: "scroll",
+                         scrollbarWidth: "none",
+                         gap: 1,
+                    }}
+               >
+                    <UserInfo />
+                    <Box>
+                         <MessageContent />
+                    </Box>
+               </Box>
+               <Footer />
+          </Stack>
+     );
 };
 
 export default Conversation;

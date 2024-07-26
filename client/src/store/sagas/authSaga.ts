@@ -5,72 +5,74 @@ import toast from "react-hot-toast";
 
 import { loginService, registerService } from "~/services/authService";
 import {
-  login,
-  loginSuccess,
-  register,
-  registerSucess,
-  updateUser,
+     login,
+     loginSuccess,
+     register,
+     registerSucess,
+     updateUser,
 } from "~/store/slices/authSlice";
 import {
-  GetMeResponse,
-  LoginFormValues,
-  CredentialResponse,
-  RegisterFormValues,
+     GetMeResponse,
+     LoginFormValues,
+     CredentialResponse,
+     RegisterFormValues,
 } from "~/types/types";
 import { saveToken } from "~/utils/token";
 import { getMeService } from "~/services/userService";
 
 function* handleGetMeSaga() {
-  try {
-    const response: AxiosResponse<GetMeResponse> = yield call(getMeService);
+     try {
+          const response: AxiosResponse<GetMeResponse> = yield call(
+               getMeService
+          );
 
-    if (response.status === 200) {
-      yield put(updateUser(response.data));
-    }
-  } catch (error) {
-    console.log(error);
-  }
+          if (response.status === 200) {
+               yield put(updateUser(response.data));
+          }
+     } catch (error) {
+          console.log(error);
+     }
 }
 
 function* handleLoginSaga(action: PayloadAction<LoginFormValues>) {
-  try {
-    const response: AxiosResponse<CredentialResponse> = yield call(
-      loginService,
-      action.payload
-    );
+     try {
+          const response: AxiosResponse<CredentialResponse> = yield call(
+               loginService,
+               action.payload
+          );
 
-    if (response.status === 200) {
-      const { refreshToken, accessToken } = response.data;
+          if (response.status === 200) {
+               const { refreshToken, accessToken } = response.data;
 
-      saveToken(refreshToken, accessToken);
-      yield put(loginSuccess(response.data));
-      yield call(handleGetMeSaga);
-      toast.success("Login successfully");
-    }
-  } catch (error) {
-    console.log(error);
-  }
+               saveToken(refreshToken, accessToken);
+               yield put(loginSuccess(response.data));
+               yield call(handleGetMeSaga);
+               toast.success("Login successfully");
+          }
+     } catch (error) {
+          console.log(error);
+     }
 }
 
 function* handleRegisterSaga(action: PayloadAction<RegisterFormValues>) {
-  try {
-    const response: AxiosResponse<CredentialResponse> = yield call(
-      registerService,
-      action.payload
-    );
-    if (response.status === 201) {
-      yield call(handleGetMeSaga);
-      yield put(registerSucess(response.data));
-      toast.success("Created new account successfully");
-    }
-  } catch (error) {
-    console.log(error);
-  }
+     try {
+          const response: AxiosResponse<CredentialResponse> = yield call(
+               registerService,
+               action.payload
+          );
+          if (response.status === 201) {
+               yield call(handleGetMeSaga);
+               yield put(registerSucess(response.data));
+               toast.success("Created new account successfully");
+          }
+     } catch (error) {
+          console.log(error);
+     }
 }
 
 function* watchAuthSaga() {
-  yield takeLatest(login.type, handleLoginSaga);
-  yield takeLatest(register.type, handleRegisterSaga);
+     yield takeLatest(login.type, handleLoginSaga);
+     yield takeLatest(register.type, handleRegisterSaga);
 }
 
 export default watchAuthSaga;
