@@ -13,8 +13,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
      <BrowserRouter>
           <Provider store={store}>
                <CssVarsProvider theme={theme}>
+                    <CssBaseline />
                     <SocketProvider>
-                         <CssBaseline />
                          <App />
                     </SocketProvider>
                </CssVarsProvider>

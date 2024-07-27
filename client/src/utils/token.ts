@@ -2,23 +2,21 @@ const accessTokenKey = "accessToken";
 const refreshTokenKey = "refreshToken";
 
 export const saveToken = (
-  accessToken: string | null,
-  refreshToken: string | null
+     accessToken: string | null,
+     refreshToken: string | null
 ) => {
-  console.log("save token");
-
-  if (accessToken && refreshToken) {
-    localStorage.setItem(accessTokenKey, accessToken);
-    localStorage.setItem(refreshTokenKey, refreshToken);
-  } else {
-    localStorage.removeItem(accessTokenKey);
-    localStorage.removeItem(refreshTokenKey);
-  }
+     if (accessToken && refreshToken) {
+          localStorage.setItem(accessTokenKey, accessToken);
+          localStorage.setItem(refreshTokenKey, refreshToken);
+     } else {
+          localStorage.removeItem(accessTokenKey);
+          localStorage.removeItem(refreshTokenKey);
+     }
 };
 
 export const getToken = () => {
-  const accessToken = localStorage.getItem(accessTokenKey);
-  const refreshToken = localStorage.getItem(refreshTokenKey);
+     const accessToken = localStorage.getItem(accessTokenKey);
+     const refreshToken = localStorage.getItem(refreshTokenKey);
 
-  return { accessToken, refreshToken };
+     return { accessToken, refreshToken };
 };

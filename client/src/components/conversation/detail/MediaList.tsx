@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
-import LinkCard from "./LinkCard";
-import FileCard from "./FileCard";
+import LinkCard from "../LinkCard";
+import FileCard from "../FileCard";
 import { formatMediaMessageContent } from "~/utils/formatter";
 
 interface MediaListProps {

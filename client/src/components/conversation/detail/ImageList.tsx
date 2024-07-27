@@ -1,5 +1,5 @@
 import { ImageList as MuiImageList, ImageListItem } from "@mui/material";
-import ImageCard from "./ImageCard";
+import ImageCard from "../ImageCard";
 
 interface ImageListProps {
      media: any;

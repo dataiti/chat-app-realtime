@@ -60,6 +60,12 @@ const conversationSlice = createSlice({
           ) => {
                state.chatDetail = action.payload.data;
           },
+          resetConversation: (state) => {
+               state.chatDetail = [];
+               state.contacts = [];
+               state.currentConversation = null;
+               state.selectedContact = null;
+          },
      },
 });
 
@@ -71,6 +77,7 @@ export const {
      addMessage,
      selectContact,
      setChatDetail,
+     resetConversation,
 } = conversationSlice.actions;
 
 export const conversationSelect = (state: RootState) => state.conversation;

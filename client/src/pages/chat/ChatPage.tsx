@@ -1,21 +1,51 @@
 import { Stack } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Contact from "~/components/conversation/contacts/Contact";
 import Conversation from "~/components/conversation/Conversation";
 import ConversationDetail from "~/components/conversation/detail/ConversationDetail";
 import useAppSelector from "~/hooks/useAppSelector";
 import { selectApp } from "~/store/slices/appSlice";
+import { useSocket } from "~/context/SocketContext";
+import { authSelect } from "~/store/slices/authSlice";
+import { conversationSelect } from "~/store/slices/conversationSlice";
 
 const ChatPage = () => {
+     const socket = useSocket();
+     const { userInfo } = useAppSelector(authSelect);
      const { openChatDetail } = useAppSelector(selectApp);
+     const { currentConversation } = useAppSelector(conversationSelect);
 
-     let conversationId = "66a1fe3de8dbfe58599be9c8";
+     const [isSocketConnected, setIsSocketConnected] = useState(false);
 
      useEffect(() => {
-          if (openChatDetail && conversationId) {
+          if (socket) {
+               socket.on("connect", () => {
+                    setIsSocketConnected(true);
+               });
+
+               return () => {
+                    socket.off("connect");
+               };
           }
-     }, []);
+     }, [socket]);
+
+     useEffect(() => {
+          if (isSocketConnected) {
+               socket?.emit("getContacts", {
+                    userId: userInfo?._id,
+               });
+          }
+     }, [isSocketConnected, socket, userInfo?._id]);
+
+     useEffect(() => {
+          if (isSocketConnected) {
+               socket?.emit("getConversationDetail", {
+                    conversationId: currentConversation?._id,
+                    userId: userInfo?._id,
+               });
+          }
+     }, [isSocketConnected, socket, userInfo?._id, currentConversation?._id]);
 
      return (
           <Stack direction="row" height="100%">
@@ -35,7 +65,7 @@ const ChatPage = () => {
                     <Contact />
                     <Conversation />
                </Stack>
-               {openChatDetail && conversationId && <ConversationDetail />}
+               {openChatDetail && <ConversationDetail />}
           </Stack>
      );
 };

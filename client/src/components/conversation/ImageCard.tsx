@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, SxProps, Theme } from "@mui/material";
 import { useState } from "react";
 import BaseModal from "~/components/ui/BaseModal";
 import { SERVER_BASE_URL } from "~/utils/constants";
@@ -6,9 +6,10 @@ import { SERVER_BASE_URL } from "~/utils/constants";
 interface ImageCardProps {
      src: string;
      alt: string;
+     style?: SxProps<Theme>;
 }
 
-const ImageCard: React.FC<ImageCardProps> = ({ src, alt, ...props }) => {
+const ImageCard: React.FC<ImageCardProps> = ({ src, alt, style, ...props }) => {
      const [openImage, setOpenImage] = useState(false);
 
      const handleOpen = () => setOpenImage(true);

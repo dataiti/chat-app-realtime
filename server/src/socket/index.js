@@ -37,6 +37,8 @@ const setupSocket = (server) => {
           const { userId } = message;
           const userSocketId = userSocketMap.get(userId);
 
+          console.log(userId);
+
           try {
                const contacts = await ConversationModel.aggregate([
                     {

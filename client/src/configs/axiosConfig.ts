@@ -1,8 +1,8 @@
 import axios from "axios";
 import toast from "react-hot-toast";
+
 import { store } from "~/store";
 import { logout } from "~/store/slices/authSlice";
-
 import { SERVER_BASE_URL } from "~/utils/constants";
 
 const axiosInstance = axios.create({
