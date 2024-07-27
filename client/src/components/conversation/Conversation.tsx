@@ -34,12 +34,12 @@ const Conversation = () => {
                     fetchCurrentConversation({
                          limit: 20,
                          senderId: userInfo._id,
-                         recepientId: selectedContact._id,
+                         recepientId: selectedContact?._id,
                          conversationType: "SINGLE",
                     })
                );
           }
-     }, [selectedContact?._id]);
+     }, [selectedContact, userInfo]);
 
      return (
           <Stack flexDirection="column" sx={{ width: "100%" }}>
@@ -54,7 +54,7 @@ const Conversation = () => {
                          gap: 1,
                     }}
                >
-                    <UserInfo />
+                    {selectedContact && <UserInfo />}
                     <Box>
                          <MessageContent />
                     </Box>

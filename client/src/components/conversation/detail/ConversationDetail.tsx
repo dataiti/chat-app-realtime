@@ -20,18 +20,19 @@ const ConversationDetail = () => {
      const socket = useSocket();
      const dispatch = useAppDispatch();
      const { userInfo } = useAppSelector(authSelect);
-     const { chatDetail } = useAppSelector(conversationSelect);
+     const { selectedContact, chatDetail, currentConversation } =
+          useAppSelector(conversationSelect);
 
      const [tabValue, setTabValue] = useState<string | null>(null);
 
      useEffect(() => {
           if (socket && userInfo) {
                socket.emit("getConversationDetail", {
-                    conversationId: "66a1fe3de8dbfe58599be9c8",
+                    conversationId: currentConversation?._id,
                     userId: userInfo._id,
                });
           }
-     }, [socket, userInfo]);
+     }, [socket, userInfo, currentConversation?._id]);
 
      const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
           setTabValue(newValue);
@@ -114,7 +115,7 @@ const ConversationDetail = () => {
 
                {!tabValue && (
                     <Box>
-                         <UserInfo />
+                         {selectedContact && <UserInfo />}
                          {renderedChatDetail}
                     </Box>
                )}

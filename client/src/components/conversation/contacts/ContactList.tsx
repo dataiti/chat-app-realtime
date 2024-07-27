@@ -1,19 +1,13 @@
 import { Stack } from "@mui/material";
 
 import ContactItem from "./ContactItem";
-import { ContactItemType } from "~/types";
+import { Contact } from "~/types";
 
 interface ContactListProps {
-     contacts: ContactItemType[];
-     selectedContact: ContactItemType | null;
-     onSelectedContact: (contact: ContactItemType) => void;
+     contacts: Contact[];
 }
 
-const ContactList: React.FC<ContactListProps> = ({
-     contacts,
-     selectedContact,
-     onSelectedContact,
-}) => {
+const ContactList: React.FC<ContactListProps> = ({ contacts }) => {
      return (
           <Stack
                direction="column"
@@ -29,8 +23,6 @@ const ContactList: React.FC<ContactListProps> = ({
                          <ContactItem
                               key={contactItem._id}
                               contactItem={contactItem}
-                              selectedContact={selectedContact}
-                              onSelectedContact={onSelectedContact}
                          />
                     ))}
           </Stack>

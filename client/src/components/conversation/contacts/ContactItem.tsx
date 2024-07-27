@@ -7,20 +7,18 @@ import {
      conversationSelect,
      selectContact,
 } from "~/store/slices/conversationSlice";
-import { ContactItemType, User } from "~/types";
+import { Contact } from "~/types";
 
 interface ContactItemProps {
-     contactItem: ContactItemType;
-     selectedContact: ContactItemType | null;
-     onSelectedContact: (contact: ContactItemType) => void;
+     contactItem: Contact;
 }
 
 const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
      const dispatch = useAppDispatch();
      const { selectedContact } = useAppSelector(conversationSelect);
 
-     const handleSelectContact = (contactItem: User) => {
-          dispatch(selectContact(contactItem));
+     const handleSelectContact = (contactItem: Contact) => {
+          dispatch(selectContact(contactItem.userContact));
      };
 
      return (
@@ -30,19 +28,19 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
                     alignItems: "center",
                     gap: 2,
                     backgroundColor:
-                         selectedContact?._id === contactItem._id
+                         selectedContact?._id === contactItem.userContact._id
                               ? "primary.main"
                               : "background.paperChannel",
                     cursor: "pointer",
                     borderRadius: 5,
                     padding: 2,
                }}
-               onClick={() => handleSelectContact(contactItem as any)}
+               onClick={() => handleSelectContact(contactItem)}
           >
                <BaseAvatar
-                    src={contactItem.avatar}
-                    alt={contactItem.firstname}
-                    isOnline={contactItem.isOnline}
+                    src={contactItem.userContact.avatar}
+                    alt={contactItem.userContact.firstname}
+                    isOnline={contactItem.userContact.isOnline}
                />
                <Box sx={{ width: "100%" }}>
                     <Box
@@ -56,12 +54,14 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
                               variant="body1"
                               sx={{
                                    color:
-                                        selectedContact?._id === contactItem._id
+                                        selectedContact?._id ===
+                                        contactItem.userContact._id
                                              ? "#fff"
                                              : "text.primary",
                               }}
                          >
-                              {contactItem.firstname} {contactItem.lastname}
+                              {contactItem.userContact.firstname}{" "}
+                              {contactItem.userContact.lastname}
                          </Typography>
                          <Typography variant="body2">4m</Typography>
                     </Box>
@@ -84,7 +84,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
                                    whiteSpace: "nowrap",
                               }}
                          >
-                              {contactItem.lastMessage}
+                              {contactItem.lastMessage.messageContent}
                          </Typography>
                          <Box
                               component="span"
@@ -93,7 +93,8 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
                                    alignItems: "center",
                                    justifyContent: "center",
                                    backgroundColor:
-                                        selectedContact?._id === contactItem._id
+                                        selectedContact?._id ===
+                                        contactItem.userContact._id
                                              ? "background.paper"
                                              : "primary.main",
                                    width: "24px",

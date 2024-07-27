@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import {
-     ContactItemType,
+     Contact,
+     ContactPayLoad,
      Conversation,
      ConversationDetailResponse,
      ConversationResponse,
@@ -13,7 +14,7 @@ import {
 import { RootState } from "~/store";
 
 interface ConversationState {
-     contacts: ContactItemType[];
+     contacts: Contact[];
      currentConversation: Conversation | null;
      selectedContact: User | null;
      chatDetail: MessageGroup[];
@@ -30,9 +31,8 @@ const conversationSlice = createSlice({
      name: "conversation",
      initialState,
      reducers: {
-          fetchContacts: (state, _action: PayloadAction) => ({ ...state }),
-          fetchContactsSucess: (state, action: PayloadAction) => {
-               // state.contacts = action.payload
+          setContacts: (state, action: PayloadAction<ContactPayLoad>) => {
+               state.contacts = action.payload.data;
           },
           selectContact: (state, action: PayloadAction<User>) => {
                state.selectedContact = action.payload;
@@ -47,6 +47,10 @@ const conversationSlice = createSlice({
           ) => {
                state.currentConversation = action.payload.data;
           },
+          clearCurrentConversation: (state) => {
+               state.currentConversation = null;
+               state.chatDetail = [];
+          },
           addMessage: (state, action: PayloadAction<Message>) => {
                state.currentConversation?.messages?.push(action.payload);
           },
@@ -60,10 +64,10 @@ const conversationSlice = createSlice({
 });
 
 export const {
-     fetchContacts,
-     fetchContactsSucess,
+     setContacts,
      fetchCurrentConversation,
      fetchCurrentConversationSucess,
+     clearCurrentConversation,
      addMessage,
      selectContact,
      setChatDetail,

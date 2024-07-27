@@ -33,6 +33,121 @@ const setupSocket = (server) => {
           } catch (error) {}
      };
 
+     const getContatcs = async (message) => {
+          const { userId } = message;
+          const userSocketId = userSocketMap.get(userId);
+
+          try {
+               const contacts = await ConversationModel.aggregate([
+                    {
+                         $match: {
+                              $and: [
+                                   {
+                                        paticipants: {
+                                             $in: [
+                                                  new mongoose.Types.ObjectId(
+                                                       userId
+                                                  ),
+                                             ],
+                                        },
+                                   },
+                                   {
+                                        isDeleted: false,
+                                   },
+                              ],
+                         },
+                    },
+                    {
+                         $lookup: {
+                              from: "messages",
+                              localField: "_id",
+                              foreignField: "conversationId",
+                              as: "messages",
+                         },
+                    },
+                    {
+                         $unwind: {
+                              path: "$messages",
+                         },
+                    },
+                    {
+                         $group: {
+                              _id: "$_id",
+                              paticipants: { $last: "$paticipants" },
+                              conversationType: { $last: "$conversationType" },
+                              lastMessage: { $last: "$messages" },
+                         },
+                    },
+
+                    {
+                         $addFields: {
+                              userContact: {
+                                   $arrayElemAt: [
+                                        {
+                                             $filter: {
+                                                  input: "$paticipants",
+                                                  as: "participant",
+                                                  cond: {
+                                                       $ne: [
+                                                            "$$participant",
+                                                            new mongoose.Types.ObjectId(
+                                                                 userId
+                                                            ),
+                                                       ],
+                                                  },
+                                             },
+                                        },
+                                        0,
+                                   ],
+                              },
+                         },
+                    },
+                    {
+                         $lookup: {
+                              from: "users",
+                              localField: "userContact",
+                              foreignField: "_id",
+                              as: "userContact",
+                         },
+                    },
+                    {
+                         $unwind: "$userContact",
+                    },
+                    {
+                         $project: {
+                              _id: 1,
+                              conversationType: 1,
+                              userContact: {
+                                   _id: 1,
+                                   firstname: 1,
+                                   lastname: 1,
+                                   email: 1,
+                                   avatar: 1,
+                              },
+                              lastMessage: {
+                                   _id: 1,
+                                   senderId: 1,
+                                   messageType: 1,
+                                   messageContent: 1,
+                                   fileType: 1,
+                                   isSeen: 1,
+                                   createdAt: 1,
+                                   updatedAt: 1,
+                              },
+                         },
+                    },
+               ]);
+
+               if (userSocketId) {
+                    io.to(userSocketId).emit("recevieContacts", {
+                         status: "success",
+                         message: "Get contatcs successfully",
+                         data: contacts,
+                    });
+               }
+          } catch (error) {}
+     };
+
      const getConversationDetail = async (message) => {
           const { conversationId, userId } = message;
           const userSocketId = userSocketMap.get(userId);
@@ -207,6 +322,7 @@ const setupSocket = (server) => {
                console.log("User ID not provided during connection");
           }
 
+          socket.on("getContacts", getContatcs);
           socket.on("getConversationDetail", getConversationDetail);
           socket.on("createGroup", createGroupConversation);
           socket.on("getConsersation", getConversation);

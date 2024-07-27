@@ -30,3 +30,20 @@ export interface ConversationDetailResponse {
      message: string;
      data: MessageGroup[];
 }
+
+export interface Contact {
+     _id: string;
+     conversationType: "SINGLE" | "GROUP";
+     lastMessage: Message;
+     userContact: User;
+}
+
+export interface ContactPayLoad {
+     data: Contact[];
+}
+
+export interface ContactsResponse {
+     status: string;
+     message: string;
+     data: Contact[];
+}

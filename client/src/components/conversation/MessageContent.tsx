@@ -49,6 +49,7 @@ const MessageContent = () => {
 
                     return (
                          <Box
+                              key={message._id}
                               sx={{
                                    display: "flex",
                                    justifyContent: `${
@@ -87,7 +88,7 @@ const TextMessage: React.FC<MessageContentProps> = ({ message, isSender }) => {
      );
 };
 
-const ImageMessage: React.FC<MessageContentProps> = ({ message, isSender }) => {
+const ImageMessage: React.FC<MessageContentProps> = ({ message }) => {
      return (
           <Box>
                <ImageCard
