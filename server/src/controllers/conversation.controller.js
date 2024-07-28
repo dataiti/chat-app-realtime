@@ -14,6 +14,13 @@ const getConversation = async (req, res, next) => {
                     "senderId, recepientId, conversationType is required"
                );
 
+          const total = await ConversationModel.countDocuments({
+               $and: [
+                    { paticipants: { $all: [senderId, recepientId] } },
+                    { conversationType },
+               ],
+          });
+
           const findConversation = await ConversationModel.findOne({
                $and: [
                     { paticipants: { $all: [senderId, recepientId] } },
@@ -33,7 +40,8 @@ const getConversation = async (req, res, next) => {
           const messages = await MessageModel.find({
                conversationId: findConversation._id,
           })
-               .limit(parseInt(limit, 20))
+               .sort({ createdAt: -1 })
+               .limit(parseInt(limit))
                .populate({
                     path: "senderId",
                     select: "email avatar firstname lastname isOnline",
@@ -43,6 +51,7 @@ const getConversation = async (req, res, next) => {
                status: "success",
                message: "Get conversation detail is successfully",
                data: {
+                    total: messages.length,
                     ...findConversation._doc,
                     messages,
                },

@@ -60,7 +60,7 @@ const conversationSlice = createSlice({
                state.chatDetail = [];
           },
           addMessage: (state, action: PayloadAction<Message>) => {
-               state.currentConversation?.messages?.push(action.payload);
+               state.currentConversation?.messages?.unshift(action.payload);
           },
           fetchConversationDetail: (
                state,

@@ -15,8 +15,7 @@ import { formatMediaMessageContent } from "~/utils/formatter";
 
 const MessageContent = () => {
      const { userInfo } = useAppSelector(authSelect);
-     const { currentConversation, selectedContact } =
-          useAppSelector(conversationSelect);
+     const { currentConversation } = useAppSelector(conversationSelect);
 
      const renderMessageType = (message: Message, isSender: boolean) => {
           switch (message.messageType) {
@@ -98,6 +97,7 @@ const MessageContent = () => {
                               sx={{
                                    display: "flex",
                                    gap: "4px",
+                                   width: "100%",
                                    justifyContent: `${
                                         isSender ? "flex-end" : "flex-start"
                                    }`,
@@ -131,7 +131,7 @@ const MessageContent = () => {
                sx={{
                     width: "100%",
                     display: "flex",
-                    flexDirection: "column",
+                    flexDirection: "column-reverse",
                }}
           >
                {renderMessages}
@@ -163,17 +163,16 @@ const TextMessage: React.FC<MessageContentProps> = ({ message, isSender }) => {
 
 const ImageMessage: React.FC<MessageContentProps> = ({ message }) => {
      return (
-          <Box sx={{ width: "100%" }}>
-               <ImageCard
-                    src={message.messageContent}
-                    alt={message.messageContent}
-                    style={{
-                         borderRadius: 12,
-                         width: "100%",
-                         cursor: "pointer",
-                    }}
-               />
-          </Box>
+          <ImageCard
+               src={message.messageContent}
+               alt={message.messageContent}
+               sx={{
+                    borderRadius: 4,
+                    width: "100%",
+                    height: "100%",
+                    cursor: "pointer",
+               }}
+          />
      );
 };
 

@@ -60,7 +60,7 @@ const SearchBar = () => {
      return (
           <Box
                sx={{
-                    padding: 1,
+                    flex: 1,
                     position: "relative",
                }}
           >
@@ -91,7 +91,7 @@ const SearchBar = () => {
                               position: "absolute",
                               left: 0,
                               zIndex: 1,
-                              top: "100%",
+                              top: "110%",
                               backgroundColor: "background.paperChannel",
                               display: "flex",
                               flexDirection: "column",
@@ -123,7 +123,7 @@ const SearchBar = () => {
                                                   sx={{
                                                        display: "flex",
                                                        alignItems: "center",
-                                                       gap: 2,
+                                                       gap: 1,
                                                   }}
                                              >
                                                   <BaseAvatar

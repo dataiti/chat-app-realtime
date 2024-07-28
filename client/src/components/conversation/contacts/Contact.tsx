@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Box, Stack, Tab, Tabs } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
 
 import ContactList from "~/components/conversation/contacts/ContactList";
 import SearchBar from "~/components/conversation/contacts/SearchBar";
@@ -12,12 +12,17 @@ import { authSelect } from "~/store/slices/authSlice";
 import useAppDispatch from "~/hooks/useAppDispatch";
 import { ConversationType } from "~/types";
 import { appSelect, setConversationType } from "~/store/slices/appSlice";
+import { GroupAdd } from "@mui/icons-material";
+import BaseModal from "~/components/ui/BaseModal";
+import CreateGroupForm from "~/components/form/CreateGroupForm";
 
 const Contact = () => {
      const dispatch = useAppDispatch();
      const { userInfo } = useAppSelector(authSelect);
      const { contacts } = useAppSelector(conversationSelect);
      const { tabConversationType } = useAppSelector(appSelect);
+     const [openCreateGroupModal, setOpenCreateGroupModal] =
+          useState<boolean>(false);
 
      useEffect(() => {
           if (userInfo) {
@@ -42,7 +47,28 @@ const Contact = () => {
                     padding: 2,
                }}
           >
-               <SearchBar />
+               <Box
+                    sx={{
+                         display: "flex",
+                         alignItems: "center",
+                         gap: 1,
+                    }}
+               >
+                    <SearchBar />
+                    <Box>
+                         <IconButton
+                              onClick={() => setOpenCreateGroupModal(true)}
+                         >
+                              <GroupAdd />
+                         </IconButton>
+                    </Box>
+                    <BaseModal
+                         open={openCreateGroupModal}
+                         onOpen={setOpenCreateGroupModal}
+                    >
+                         <CreateGroupForm />
+                    </BaseModal>
+               </Box>
                <Box sx={{ pY: 1, borderBottom: 1, borderColor: "divider" }}>
                     <Tabs
                          value={tabConversationType}
