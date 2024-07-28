@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { Box, Button, FormControl, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { UseFormReturn } from "react-hook-form";
 
-import BaseInputController from "~/components/ui/BaseInpuController";
+import BaseTextFieldController from "~/components/ui/BaseTextFieldController";
 import { LoginFormValues } from "~/types";
 
 interface LoginFormProps {
@@ -23,14 +24,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ form, onSubmitLogin }) => {
                onSubmit={handleSubmit(onSubmitLogin)}
                sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
-               <BaseInputController
+               <BaseTextFieldController
                     control={control}
                     name="email"
                     label="Email address"
                     placeholder="Enter your email address"
                     errorMessage={errors?.email?.message}
                />
-               <BaseInputController
+               <BaseTextFieldController
                     type="password"
                     control={control}
                     name="password"
@@ -45,7 +46,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ form, onSubmitLogin }) => {
                          fullWidth
                          size="large"
                          sx={{ marginTop: 1 }}
-                         disabled={!isValid || isSubmitting}
+                         // disabled={!isValid || isSubmitting}
                     >
                          Login
                     </Button>
@@ -59,4 +60,4 @@ const LoginForm: React.FC<LoginFormProps> = ({ form, onSubmitLogin }) => {
      );
 };
 
-export default LoginForm;
+export default memo(LoginForm);

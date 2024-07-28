@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Stack } from "@mui/material";
 
 import ContactItem from "./ContactItem";
@@ -29,4 +30,4 @@ const ContactList: React.FC<ContactListProps> = ({ contacts }) => {
      );
 };
 
-export default ContactList;
+export default memo(ContactList);

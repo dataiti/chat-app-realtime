@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { FolderZip, TextSnippet } from "@mui/icons-material";
 import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material/styles";
+import { memo } from "react";
 
 interface FileCardProps {
      content: string | undefined;
@@ -71,4 +72,4 @@ const FileCard: React.FC<FileCardProps> = ({ content, fileType, sx }) => {
      );
 };
 
-export default FileCard;
+export default memo(FileCard);

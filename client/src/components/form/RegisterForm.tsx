@@ -1,9 +1,10 @@
+import { memo } from "react";
 import { Box, Button, FormControl, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { UseFormReturn } from "react-hook-form";
 
 import { RegisterFormValues } from "~/types";
-import BaseInputController from "~/components/ui/BaseInpuController";
+import BaseTextFieldController from "~/components/ui/BaseTextFieldController";
 
 interface RegisterFormProps {
      form: UseFormReturn<RegisterFormValues>;
@@ -26,28 +27,28 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                onSubmit={handleSubmit(onSubmitRegister)}
                sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
-               <BaseInputController
+               <BaseTextFieldController
                     control={control}
                     name="firstname"
                     label="Firstname"
                     placeholder="Enter your firstname"
                     errorMessage={errors?.firstname?.message}
                />
-               <BaseInputController
+               <BaseTextFieldController
                     control={control}
                     name="lastname"
                     label="Lastname"
                     placeholder="Enter your lastname"
                     errorMessage={errors?.lastname?.message}
                />
-               <BaseInputController
+               <BaseTextFieldController
                     control={control}
                     name="email"
                     label="Email address"
                     placeholder="Enter your email address"
                     errorMessage={errors?.email?.message}
                />
-               <BaseInputController
+               <BaseTextFieldController
                     type="password"
                     control={control}
                     name="password"
@@ -76,4 +77,4 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
      );
 };
 
-export default RegisterForm;
+export default memo(RegisterForm);

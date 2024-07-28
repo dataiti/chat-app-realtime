@@ -5,6 +5,7 @@ import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material/styles";
 
 import { SERVER_BASE_URL } from "~/utils/constants";
+import { memo } from "react";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
      "& .MuiBadge-badge": {
@@ -87,4 +88,4 @@ const BaseAvatar: React.FC<BaseAvatarProps> = ({
      );
 };
 
-export default BaseAvatar;
+export default memo(BaseAvatar);

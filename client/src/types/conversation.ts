@@ -39,11 +39,17 @@ export interface Contact {
 }
 
 export interface ContactPayLoad {
-     data: Contact[];
+     conversationType: ConversationType;
 }
 
-export interface ContactsResponse {
+export interface ContactResponse {
      status: string;
      message: string;
      data: Contact[];
 }
+
+export interface ConversationDetailPayLoad {
+     conversationId: string;
+}
+
+export type ConversationType = "ALL" | "GROUP" | "SINGLE";

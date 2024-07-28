@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "~/store";
+import { ConversationType } from "~/types";
 
 interface AppState {
      openChatDetail: boolean;
+     tabConversationType: ConversationType;
 }
 
 const initialState: AppState = {
      openChatDetail: true,
+     tabConversationType: "ALL",
 };
 
 const appSlice = createSlice({
@@ -16,11 +19,14 @@ const appSlice = createSlice({
           toggleOpenChatDetail: (state) => {
                state.openChatDetail = !state.openChatDetail;
           },
+          setConversationType: (state, action) => {
+               state.tabConversationType = action.payload;
+          },
      },
 });
 
-export const { toggleOpenChatDetail } = appSlice.actions;
+export const { toggleOpenChatDetail, setConversationType } = appSlice.actions;
 
-export const selectApp = (state: RootState) => state.app;
+export const appSelect = (state: RootState) => state.app;
 
 export default appSlice.reducer;

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import moment, { Moment } from "moment";
 
@@ -15,7 +15,8 @@ import { formatMediaMessageContent } from "~/utils/formatter";
 
 const MessageContent = () => {
      const { userInfo } = useAppSelector(authSelect);
-     const { currentConversation } = useAppSelector(conversationSelect);
+     const { currentConversation, selectedContact } =
+          useAppSelector(conversationSelect);
 
      const renderMessageType = (message: Message, isSender: boolean) => {
           switch (message.messageType) {
@@ -53,7 +54,7 @@ const MessageContent = () => {
                const showDate = messageDate !== lastDate;
                const messageTime = moment(message.createdAt);
                const showAvatar =
-                    !lastTime || messageTime.diff(lastTime, "minutes") > 5;
+                    !lastTime || messageTime.diff(lastTime, "s") > 30;
 
                lastDate = messageDate;
                lastTime = messageTime;
@@ -162,7 +163,7 @@ const TextMessage: React.FC<MessageContentProps> = ({ message, isSender }) => {
 
 const ImageMessage: React.FC<MessageContentProps> = ({ message }) => {
      return (
-          <Box>
+          <Box sx={{ width: "100%" }}>
                <ImageCard
                     src={message.messageContent}
                     alt={message.messageContent}
@@ -214,4 +215,4 @@ const FileMessage: React.FC<MessageContentProps> = ({ message, isSender }) => {
      );
 };
 
-export default MessageContent;
+export default memo(MessageContent);

@@ -35,7 +35,7 @@ const SearchBar = () => {
                return;
           }
 
-          const fetchSearchUserApi = async () => {
+          (async () => {
                try {
                     const response: AxiosResponse<SearchUserResponse> =
                          await searchUserService(searchDebouced, 10);
@@ -48,9 +48,7 @@ const SearchBar = () => {
                     setOpenUserDropdown(false);
                     console.log(error);
                }
-          };
-
-          fetchSearchUserApi();
+          })();
      }, [searchDebouced]);
 
      const handleSelectContact = (user: User) => {

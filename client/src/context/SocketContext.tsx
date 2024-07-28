@@ -5,21 +5,14 @@ import React, {
      useEffect,
      useState,
 } from "react";
-import { useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 
 import useAppDispatch from "~/hooks/useAppDispatch";
+import useAppSelector from "~/hooks/useAppSelector";
+import { appSelect } from "~/store/slices/appSlice";
 import { authSelect } from "~/store/slices/authSlice";
-import {
-     addMessage,
-     setChatDetail,
-     setContacts,
-} from "~/store/slices/conversationSlice";
-import {
-     ContactsResponse,
-     ConversationDetailResponse,
-     MessageResponse,
-} from "~/types";
+import { addMessage, fetchContacts } from "~/store/slices/conversationSlice";
+import { MessageResponse } from "~/types";
 import { SERVER_BASE_URL } from "~/utils/constants";
 
 const SocketContext = createContext<Socket | null>(null);
@@ -34,7 +27,8 @@ export const useSocket = () => {
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
      const dispatch = useAppDispatch();
-     const { userInfo } = useSelector(authSelect);
+     const { userInfo } = useAppSelector(authSelect);
+     const { tabConversationType } = useAppSelector(appSelect);
 
      const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -47,40 +41,24 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
                setSocket(newSocket);
 
-               const handleReceiveContacts = (message: ContactsResponse) => {
-                    if (message.status === "success") {
-                         dispatch(setContacts(message));
-                    }
-               };
-
-               const handleReceiveDetail = (
-                    message: ConversationDetailResponse
-               ) => {
-                    if (message.status === "success") {
-                         dispatch(setChatDetail(message));
-                    }
-               };
-
                const handleReceiveMessage = (message: MessageResponse) => {
                     if (message.status === "success") {
                          dispatch(addMessage(message.data));
+                         dispatch(
+                              fetchContacts({
+                                   conversationType: tabConversationType,
+                              })
+                         );
                     }
                };
 
-               newSocket.on("recevieContacts", handleReceiveContacts);
-               newSocket.on("receiveConversationDetail", handleReceiveDetail);
                newSocket.on("receiveMessage", handleReceiveMessage);
                newSocket.on("connect", () => {
                     console.log("✅ Connected to socket server");
                });
 
                return () => {
-                    // newSocket.off("recevieContacts", handleReceiveContacts);
-                    // newSocket.off(
-                    //      "receiveConversationDetail",
-                    //      handleReceiveDetail
-                    // );
-                    // newSocket.off("receiveMessage", handleReceiveMessage);
+                    newSocket.off("receiveMessage", handleReceiveMessage);
                     newSocket.disconnect();
                };
           }

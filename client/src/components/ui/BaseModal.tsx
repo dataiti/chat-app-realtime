@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
@@ -37,4 +37,4 @@ const BaseModal: React.FC<BaseModalProps> = ({ children, open, onClose }) => {
      );
 };
 
-export default BaseModal;
+export default memo(BaseModal);

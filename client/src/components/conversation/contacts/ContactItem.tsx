@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { memo } from "react";
 
 import BaseAvatar from "~/components/ui/BaseAvatar";
 import useAppDispatch from "~/hooks/useAppDispatch";
@@ -8,6 +9,7 @@ import {
      selectContact,
 } from "~/store/slices/conversationSlice";
 import { Contact } from "~/types";
+import { formatRelativeTime } from "~/utils/formatter";
 
 interface ContactItemProps {
      contactItem: Contact;
@@ -53,17 +55,23 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
                          <Typography
                               variant="body1"
                               sx={{
+                                   fontWeight: 500,
                                    color:
                                         selectedContact?._id ===
                                         contactItem.userContact._id
-                                             ? "#fff"
+                                             ? "background.paper"
                                              : "text.primary",
                               }}
                          >
                               {contactItem.userContact.firstname}{" "}
                               {contactItem.userContact.lastname}
                          </Typography>
-                         <Typography variant="body2">4m</Typography>
+                         <Typography variant="body2">
+                              {contactItem.lastMessage?.createdAt &&
+                                   formatRelativeTime(
+                                        contactItem.lastMessage.createdAt
+                                   )}
+                         </Typography>
                     </Box>
                     <Box
                          sx={{
@@ -78,13 +86,22 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
                               sx={{
                                    width: (theme) =>
                                         `calc(${theme.chatCustom.contactWidth} - 170px)`,
-                                   color: "text.secondary",
+                                   color: "text.primary",
                                    overflow: "hidden",
                                    textOverflow: "ellipsis",
                                    whiteSpace: "nowrap",
+                                   fontWeight: 400,
                               }}
                          >
-                              {contactItem.lastMessage.messageContent}
+                              {`${
+                                   contactItem.lastMessage.messageType ===
+                                   "IMAGE"
+                                        ? "Send Image"
+                                        : contactItem.lastMessage
+                                               .messageType === "FILE"
+                                        ? "Send File"
+                                        : contactItem.lastMessage.messageContent
+                              }`}
                          </Typography>
                          <Box
                               component="span"
@@ -111,4 +128,4 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactItem }) => {
      );
 };
 
-export default ContactItem;
+export default memo(ContactItem);

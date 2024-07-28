@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { ImageList as MuiImageList, ImageListItem } from "@mui/material";
+
 import ImageCard from "../ImageCard";
 
 interface ImageListProps {
@@ -26,4 +28,4 @@ const ImageList: React.FC<ImageListProps> = ({ media, maxItems }) => {
      );
 };
 
-export default ImageList;
+export default memo(ImageList);

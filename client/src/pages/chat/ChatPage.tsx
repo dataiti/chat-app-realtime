@@ -1,51 +1,36 @@
 import { Stack } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import Contact from "~/components/conversation/contacts/Contact";
 import Conversation from "~/components/conversation/Conversation";
 import ConversationDetail from "~/components/conversation/detail/ConversationDetail";
 import useAppSelector from "~/hooks/useAppSelector";
-import { selectApp } from "~/store/slices/appSlice";
-import { useSocket } from "~/context/SocketContext";
+import { appSelect } from "~/store/slices/appSlice";
 import { authSelect } from "~/store/slices/authSlice";
-import { conversationSelect } from "~/store/slices/conversationSlice";
+import {
+     conversationSelect,
+     fetchCurrentConversation,
+} from "~/store/slices/conversationSlice";
+import useAppDispatch from "~/hooks/useAppDispatch";
 
 const ChatPage = () => {
-     const socket = useSocket();
+     const dispatch = useAppDispatch();
      const { userInfo } = useAppSelector(authSelect);
-     const { openChatDetail } = useAppSelector(selectApp);
-     const { currentConversation } = useAppSelector(conversationSelect);
-
-     const [isSocketConnected, setIsSocketConnected] = useState(false);
+     const { openChatDetail } = useAppSelector(appSelect);
+     const { selectedContact } = useAppSelector(conversationSelect);
 
      useEffect(() => {
-          if (socket) {
-               socket.on("connect", () => {
-                    setIsSocketConnected(true);
-               });
-
-               return () => {
-                    socket.off("connect");
-               };
+          if (selectedContact && userInfo) {
+               dispatch(
+                    fetchCurrentConversation({
+                         limit: 20,
+                         senderId: userInfo._id,
+                         recepientId: selectedContact?._id,
+                         conversationType: "SINGLE",
+                    })
+               );
           }
-     }, [socket]);
-
-     useEffect(() => {
-          if (isSocketConnected) {
-               socket?.emit("getContacts", {
-                    userId: userInfo?._id,
-               });
-          }
-     }, [isSocketConnected, socket, userInfo?._id]);
-
-     useEffect(() => {
-          if (isSocketConnected) {
-               socket?.emit("getConversationDetail", {
-                    conversationId: currentConversation?._id,
-                    userId: userInfo?._id,
-               });
-          }
-     }, [isSocketConnected, socket, userInfo?._id, currentConversation?._id]);
+     }, [selectedContact, userInfo]);
 
      return (
           <Stack direction="row" height="100%">

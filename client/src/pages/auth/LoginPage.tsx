@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -9,35 +10,36 @@ import useAppDispatch from "~/hooks/useAppDispatch";
 import { login } from "~/store/slices/authSlice";
 
 const LoginPage = () => {
-  const dispatch = useAppDispatch();
+     const dispatch = useAppDispatch();
 
-  const form = useForm<yup.InferType<typeof loginFormSchema>>({
-    defaultValues: { email: "", password: "" },
-    resolver: yupResolver(loginFormSchema),
-    mode: "onChange",
-  });
+     const form = useForm<yup.InferType<typeof loginFormSchema>>({
+          defaultValues: { email: "", password: "" },
+          resolver: yupResolver(loginFormSchema),
+          mode: "onChange",
+     });
 
-  const handleSubmitLogin = async (
-    data: yup.InferType<typeof loginFormSchema>
-  ) => {
-    dispatch(login(data));
-  };
+     const handleSubmitLogin = useCallback(
+          async (data: yup.InferType<typeof loginFormSchema>) => {
+               dispatch(login(data));
+          },
+          [dispatch]
+     );
 
-  return (
-    <Box
-      sx={{
-        width: "400px",
-        backgroundColor: "background.paper",
-        padding: "40px 30px",
-        borderRadius: 10,
-      }}
-    >
-      <Typography variant="h4" textAlign="center">
-        Login
-      </Typography>
-      <LoginForm form={form} onSubmitLogin={handleSubmitLogin} />
-    </Box>
-  );
+     return (
+          <Box
+               sx={{
+                    width: "400px",
+                    backgroundColor: "background.paper",
+                    padding: "40px 30px",
+                    borderRadius: 10,
+               }}
+          >
+               <Typography variant="h4" textAlign="center">
+                    Login
+               </Typography>
+               <LoginForm form={form} onSubmitLogin={handleSubmitLogin} />
+          </Box>
+     );
 };
 
 export default LoginPage;

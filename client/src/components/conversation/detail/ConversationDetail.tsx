@@ -11,14 +11,29 @@ import ImageList from "~/components/conversation/detail/ImageList";
 import useAppSelector from "~/hooks/useAppSelector";
 import useAppDispatch from "~/hooks/useAppDispatch";
 
-import { conversationSelect } from "~/store/slices/conversationSlice";
-import { toggleOpenChatDetail } from "~/store/slices/appSlice";
+import {
+     conversationSelect,
+     fetchConversationDetail,
+} from "~/store/slices/conversationSlice";
+import { appSelect, toggleOpenChatDetail } from "~/store/slices/appSlice";
 
 const ConversationDetail = () => {
      const dispatch = useAppDispatch();
-     const { selectedContact, chatDetail } = useAppSelector(conversationSelect);
+     const { openChatDetail } = useAppSelector(appSelect);
+     const { selectedContact, chatDetail, currentConversation } =
+          useAppSelector(conversationSelect);
 
      const [tabValue, setTabValue] = useState<string | null>(null);
+
+     useEffect(() => {
+          if (openChatDetail && currentConversation) {
+               dispatch(
+                    fetchConversationDetail({
+                         conversationId: currentConversation?._id,
+                    })
+               );
+          }
+     }, [openChatDetail, currentConversation]);
 
      const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
           setTabValue(newValue);

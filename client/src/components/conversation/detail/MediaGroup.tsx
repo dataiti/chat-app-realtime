@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Box, Button, Typography } from "@mui/material";
 
 import MediaList from "./MediaList";
@@ -51,4 +52,4 @@ const MediaGroup: React.FC<MediaGroupProps> = ({
           </Box>
      );
 };
-export default MediaGroup;
+export default memo(MediaGroup);

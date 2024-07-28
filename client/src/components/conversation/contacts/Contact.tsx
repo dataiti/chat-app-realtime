@@ -1,23 +1,37 @@
+import { useEffect } from "react";
 import { Box, Stack, Tab, Tabs } from "@mui/material";
 
 import ContactList from "~/components/conversation/contacts/ContactList";
-import SearchBar from "./SearchBar";
+import SearchBar from "~/components/conversation/contacts/SearchBar";
 import useAppSelector from "~/hooks/useAppSelector";
-import { conversationSelect } from "~/store/slices/conversationSlice";
-import { useEffect, useState } from "react";
-import { useSocket } from "~/context/SocketContext";
+import {
+     conversationSelect,
+     fetchContacts,
+} from "~/store/slices/conversationSlice";
 import { authSelect } from "~/store/slices/authSlice";
-import BaseTabPanel from "~/components/ui/BaseTabPanel";
+import useAppDispatch from "~/hooks/useAppDispatch";
+import { ConversationType } from "~/types";
+import { appSelect, setConversationType } from "~/store/slices/appSlice";
 
 const Contact = () => {
-     const socket = useSocket();
+     const dispatch = useAppDispatch();
      const { userInfo } = useAppSelector(authSelect);
      const { contacts } = useAppSelector(conversationSelect);
+     const { tabConversationType } = useAppSelector(appSelect);
 
-     const [tabValue, setTabValue] = useState<string | null>("SINGLE");
+     useEffect(() => {
+          if (userInfo) {
+               dispatch(
+                    fetchContacts({ conversationType: tabConversationType })
+               );
+          }
+     }, [userInfo, tabConversationType]);
 
-     const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-          setTabValue(newValue);
+     const handleChange = (
+          _event: React.SyntheticEvent,
+          newValue: ConversationType
+     ) => {
+          dispatch(setConversationType(newValue));
      };
 
      return (
@@ -26,13 +40,12 @@ const Contact = () => {
                sx={{
                     width: (theme) => theme.chatCustom.contactWidth,
                     padding: 2,
-                    borderRight: "2px solid background.papper",
                }}
           >
                <SearchBar />
                <Box sx={{ pY: 1, borderBottom: 1, borderColor: "divider" }}>
                     <Tabs
-                         value={tabValue}
+                         value={tabConversationType}
                          onChange={handleChange}
                          aria-label="basic tabs example"
                     >
@@ -41,9 +54,7 @@ const Contact = () => {
                          <Tab label="Group" value="GROUP" />
                     </Tabs>
                </Box>
-               <BaseTabPanel value={tabValue} index="SINGLE">
-                    <ContactList contacts={contacts} />
-               </BaseTabPanel>
+               <ContactList contacts={contacts} />
           </Stack>
      );
 };

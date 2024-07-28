@@ -24,3 +24,13 @@ export interface MessageGroup {
      messages: Message[];
      messageType: "TEXT" | "IMAGE" | "FILE" | "LINK";
 }
+
+export interface ImageMessage {
+     src: string;
+     alt: string;
+}
+
+export interface FileMessage {
+     name: string;
+     type: string;
+}

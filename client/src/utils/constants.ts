@@ -9,14 +9,19 @@ export const REFRESH_TOKEN_ENDPOINT = `${AUTH_RESOURCE}/refresh-token`;
 
 export const CONVERSATION_RESOURCE = "/api/v1/conversation";
 export const GET_CURRENT_CONVERSATION_ENDPOINT = `${CONVERSATION_RESOURCE}/get-current-conversation`;
+export const GET_CONTATCTS_ENDPOINT = `${CONVERSATION_RESOURCE}/get-contacts`;
+export const GET_CONVERSATION_DETAIL_ENDPOINT = `${CONVERSATION_RESOURCE}/get-conversation-detail`;
 
 export const USER_RESOURCE = "/api/v1/user";
 export const GET_ME_ENDPOINT = `${USER_RESOURCE}/get-me`;
 export const GET_SEARCH_USER_ENDPOINT = `${USER_RESOURCE}/search-user`;
 
+export const MESSAGE_RESOURCE = "/api/v1/message";
+export const UPLOAD_FILE_ENDPOINT = `${MESSAGE_RESOURCE}/upload-file`;
+
 export const MESSAGE_TYPE = {
-  TEXT: "TEXT",
-  IMAGE: "IMAGE",
-  FILE: "FILE",
-  LINK: "LINK",
+     TEXT: "TEXT",
+     IMAGE: "IMAGE",
+     FILE: "FILE",
+     LINK: "LINK",
 };

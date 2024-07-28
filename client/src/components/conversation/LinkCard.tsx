@@ -2,6 +2,7 @@ import { Box, Typography, Link } from "@mui/material";
 import { Link as LinkIcon } from "@mui/icons-material";
 import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material/styles";
+import { memo } from "react";
 
 interface LinkCardProps {
      content: string | undefined;
@@ -69,4 +70,4 @@ const LinkCard: React.FC<LinkCardProps> = ({ content, sx }) => {
      );
 };
 
-export default LinkCard;
+export default memo(LinkCard);

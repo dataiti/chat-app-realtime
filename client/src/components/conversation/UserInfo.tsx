@@ -3,7 +3,7 @@ import BaseAvatar from "../ui/BaseAvatar";
 import useAppSelector from "~/hooks/useAppSelector";
 import { conversationSelect } from "~/store/slices/conversationSlice";
 
-const UserInfo = () => {
+const UserInfo = ({}) => {
      const { selectedContact } = useAppSelector(conversationSelect);
 
      return (

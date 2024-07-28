@@ -16,7 +16,7 @@ import {
      LoginFormValues,
      CredentialResponse,
      RegisterFormValues,
-} from "~/types/types";
+} from "~/types";
 import { saveToken } from "~/utils/token";
 import { getMeService } from "~/services/userService";
 
@@ -44,7 +44,7 @@ function* handleLoginSaga(action: PayloadAction<LoginFormValues>) {
           if (response.status === 200) {
                const { refreshToken, accessToken } = response.data;
 
-               saveToken(refreshToken, accessToken);
+               saveToken(accessToken, refreshToken);
                yield put(loginSuccess(response.data));
                yield call(handleGetMeSaga);
                toast.success("Login successfully");

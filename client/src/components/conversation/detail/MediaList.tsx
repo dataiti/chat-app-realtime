@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { Stack } from "@mui/material";
+
 import LinkCard from "../LinkCard";
 import FileCard from "../FileCard";
 import { formatMediaMessageContent } from "~/utils/formatter";
@@ -31,4 +33,4 @@ const MediaList: React.FC<MediaListProps> = ({ media, maxItems }) => {
      );
 };
 
-export default MediaList;
+export default memo(MediaList);
